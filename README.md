@@ -11,6 +11,8 @@ Ex:
 ./okta_saml_cert.sh -o micah.okta.com -t aaabbbcccddd -a Palo
 
 app id: 0oaeocdejh75p718F1t7, app label: Palo Alto Networks - GlobalProtect, app name: panw_globalprotect
+
+NOTE: Take note of the app id, app label and app name as you will need them later.
 ```
   
 ## Step 2:
