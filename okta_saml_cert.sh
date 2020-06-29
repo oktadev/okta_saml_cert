@@ -21,7 +21,7 @@ usage () {
   echo This returns information about the current cert for the app and generates a new certificate signing Request
   echo
   echo "    Ex:"
-  echo "    ${cmd} ./okta_saml_cert.sh  -o micah.okta.com -t aaabbbcccddd -i 0oaeod519znhwlx7o1t7"
+  echo "    ${cmd} -o micah.okta.com -t aaabbbcccddd -i 0oaeod519znhwlx7o1t7"
   cat <<EOF
     Current Cert Info:
     Certificate:
@@ -51,7 +51,7 @@ EOF
   echo This uploads the new cert for your app and switches the app to use this cert instead of the original
   echo
   echo "    Ex:"
-  echo "    ${cmd} ./okta_saml_cert.sh  -o micah.okta.com -t aaabbbcccddd -i 0oaeod519znhwlx7o1t7"
+  echo "    ${cmd} -o micah.okta.com -t aaabbbcccddd -i 0oaeod519znhwlx7o1t7"
   cat <<EOF
     Uploading new cert:
     -----BEGIN CERTIFICATE-----
