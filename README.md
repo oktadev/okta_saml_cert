@@ -48,7 +48,10 @@ Download the certificates and re-run this script with the -c and -d params to up
 
 ## Step 3:
 
-`./okta_saml_cert.sh -o <okta org> -t <api token> -i <okta app id> -c <cert file name> -d <csr id from step 2>`
+```
+./okta_saml_cert.sh -o <okta org> -t <api token> -i <okta app id> \
+                    -c <cert file name> -d <csr id from step 2>
+```
   
 This uploads the new cert for your app and switches the app to use this cert instead of the original
 
