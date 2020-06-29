@@ -51,19 +51,12 @@ Download the certificates and re-run this script with the -c and -d params to up
 **NOTE:** You'll need to use a Certificate Authority (CA) to sign the CSR and get the new certificate. 
 https://zerossl.com is one option.
 
-## Step 3:
+## Step 3 (continues automatically from step 2):
 
-```
-./okta_saml_cert.sh -o <okta org> -t <api token> -i <okta app id> \
-                    -c <cert file name> -d <csr id from step 2>
-```
-  
-This uploads the new cert for your app and switches the app to use this cert instead of the original
-
-Ex:
-```
-./okta_saml_cert.sh  -o micah.okta.com -t aaabbbcccddd -i 0oaeod519znhwlx7o1t7 \
-                     -c certificate.crt -d sLtFipH36rCsefZ0jITKrJL6zhI9h4wlgM17mQGnDZk
+Enter the name of your certificate file (ex: certificate.crt): certificate.crt
+Working with: certificate.crt
+Is this correct? y
+Working with app name: panw_globalprotect and app label: Palo Alto Networks - GlobalProtect
 
 Uploading new cert:
 -----BEGIN CERTIFICATE-----

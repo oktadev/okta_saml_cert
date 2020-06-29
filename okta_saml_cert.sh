@@ -45,14 +45,17 @@ usage () {
     Use this CSR at the SSL Certificate Authority of your choice to get it signed by them.
     Download the certificates and re-run this script with the -c and -d params to upload to Okta.
 EOF
-  echo "Step 3:"
-  echo "${cmd} -o <okta org> -t <api token> -i <okta app id> -c <cert file name> -d <csr id from step 2>"
-  echo 
+  echo
+  echo "Step 3 (continues automatically from step 2):"
+
   echo This uploads the new cert for your app and switches the app to use this cert instead of the original
   echo
-  echo "    Ex:"
-  echo "    ${cmd} -o micah.okta.com -t aaabbbcccddd -i 0oaeod519znhwlx7o1t7"
   cat <<EOF
+    Enter the name of your certificate file (ex: certificate.crt): certificate.crt
+    Working with: certificate.crt
+    Is this correct? y
+    Working with app name: panw_globalprotect and app label: Palo Alto Networks - GlobalProtect
+
     Uploading new cert:
     -----BEGIN CERTIFICATE-----
     MIIGdjCCBF6gAwIBAgIQBuS2o/B8gSSMTRBKfbJVRzANBgkqhkiG9w0BAQwFADBL
@@ -166,6 +169,28 @@ check_input() {
   fi
 }
 
+yn() {
+  local msg=$1
+  local with_value=$2
+  local good=N
+  while [ ${good} != "Y" ]
+    do
+      if [[ -n ${with_value} ]]
+        then
+          read -p "${msg}" VALUE
+          echo "Working with: ${VALUE}"
+      else
+          echo "${msg}"
+      fi
+      read -p "Is this correct? " yn
+      case ${yn} in
+        [Yy]* ) good=Y; break;;
+        [Nn]* ) if [[ -n ${with_value} ]]; then good=N; else echo "try again..."; exit 1; fi;;
+        * ) echo "please answer y or n...";;
+      esac
+  done
+}
+
 metadata() {
   api /api/v1/apps/${OKTA_APP_ID}/sso/saml/metadata
   CERT=$(echo ${result} | sed -e "s/^.*<ds:X509Certificate/<ds:X509Certificate/" | sed -e "s/<ds:X509Certificate>//g" | sed -e "s/<\/ds:X509Certificate>//g" | awk -F"<" '{print $1}' | tr " " "\n")
@@ -207,23 +232,33 @@ do_csr() {
 EOF
 
   echo "About to submit the following json to the csrs endpoint:"
-  echo "${JSON}"
+  yn "${JSON}"
 
   JSON_COMPACT=$(echo ${JSON} | tr "\n" " ")
   api "/api/v1/apps/${OKTA_APP_ID}/credentials/csrs" "${JSON_COMPACT}"
-  
+
+  OKTA_CSR_ID=$(echo ${result} | jq -r .id)
+
   echo
   echo "Here's the id for your CSR:"
-  echo ${result} | jq -r .id
+  echo ${OKTA_CSR_ID}
   echo
   echo "Here's your CSR:"
   echo ${result} | jq -r .csr
   echo
   echo Use this CSR at the SSL Certificate Authority of your choice to get it signed by them.
-  echo Download the certificates and re-run this script with the -c and -d params to upload to Okta.
+  echo Download the certificates and then continue.
+  echo
 }
 
 do_cert_upload() {
+  api /api/v1/apps/${OKTA_APP_ID}
+  APP_NAME=$(echo ${result} | jq -r .name)
+  APP_LABEL=$(echo ${result} | jq -r .label)
+
+  echo "Working with app name: ${APP_NAME} and app label: ${APP_LABEL}"
+  echo
+
   CERT=$(cat ${CERT_FILE_NAME})
 
   echo "Uploading new cert:"
@@ -237,12 +272,6 @@ do_cert_upload() {
   echo "Here is the new key id:"
   echo ${KID}
   echo
-
-  echo "Please supply the following information in order to update your application to use the new key:"
-  read -p "app name (ex: panw_globalprotect): " APP_NAME
-  check_input "app name" ${APP_NAME}
-  read -p "app label (ex: Palo Alto Networks - GlobalProtect): " APP_LABEL
-  check_input "app labe" ${APP_LABEL}
 
   read -r -d '' JSON <<EOF
 {
@@ -270,7 +299,7 @@ EOF
   echo "Please make sure that the new cert information matches what you expect."
 }
 
-while getopts ":o:t:a:i:c:d:" opt; do
+while getopts ":o:t:a:i:" opt; do
   case ${opt} in
     o )
       OKTA_ORG=$OPTARG
@@ -283,12 +312,6 @@ while getopts ":o:t:a:i:c:d:" opt; do
       ;;
     i )
       OKTA_APP_ID=$OPTARG
-      ;;
-    d)
-      OKTA_CSR_ID=$OPTARG
-      ;;
-    c )
-      CERT_FILE_NAME=$OPTARG
       ;;
     : )
       echo "Invalid option: -$OPTARG requires and argument" 1>&2
@@ -318,17 +341,18 @@ if [[ -n ${OKTA_APP_ID} && -n ${OKTA_APP_NAME} ]]
     echo "specify either -a or -i, not both"; echo; usage
 fi
 
-if [[ -n ${CERT_FILE_NAME} ]] && [[ -z ${OKTA_APP_ID} || -z ${OKTA_CSR_ID} ]]
+if [[ -z ${OKTA_APP_ID} && -z ${OKTA_APP_NAME} ]]
   then
-    echo "if you specify a certificate file name with -c you must also have an okta app id with -i and a csr id with -d"; echo; usage
+    echo "one of -a or -i is required"; echo; usage
 fi
 
-if [[ -n ${OKTA_APP_ID} && -z ${CERT_FILE_NAME} ]]
+if [[ -z ${OKTA_APP_ID} ]]
   then
-    do_csr
-elif [[ -n ${OKTA_APP_ID} && -n ${CERT_FILE_NAME} && -n ${OKTA_CSR_ID} ]]
-  then
-    do_cert_upload
-else
     apps
+    return 0  
 fi
+
+do_csr
+yn "Enter the name of your certificate file (ex: certificate.crt): " true
+CERT_FILE_NAME=${VALUE}
+do_cert_upload
