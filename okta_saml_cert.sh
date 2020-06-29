@@ -91,7 +91,13 @@ EOF
 
   JSON_COMPACT=$(echo ${JSON} | tr "\n" " ")
   api "/api/v1/apps/${OKTA_APP_ID}/credentials/csrs" "${JSON_COMPACT}"
-  echo ${result}
+  
+  echo "Here's your CSR:"
+  echo
+  echo ${result} | jq -r .csr
+  echo
+  echo Use this CSR at the SSL Certificate Authority of your choice to get it signed by them.
+  echo Download the certificates and re-run this script with the -c param to upload to Okta.
 }
 
 while getopts ":o:t:a:i:" opt; do
