@@ -57,7 +57,8 @@ This uploads the new cert for your app and switches the app to use this cert ins
 
 Ex:
 ```
-./okta_saml_cert.sh  -o micah.okta.com -t aaabbbcccddd -i 0oaeod519znhwlx7o1t7"
+./okta_saml_cert.sh  -o micah.okta.com -t aaabbbcccddd -i 0oaeod519znhwlx7o1t7 \
+                     -c certificate.crt -d sLtFipH36rCsefZ0jITKrJL6zhI9h4wlgM17mQGnDZk
 
 Uploading new cert:
 -----BEGIN CERTIFICATE-----
