@@ -98,19 +98,16 @@ EOF
 requirements () {
   local httpieFound="FOUND"
   local jqFound="FOUND"
-  local base64Found="FOUND"
   local opensslFound="FOUND"
 
   hash http 2>/dev/null || httpieFound="NOT FOUND"
   hash jq 2>/dev/null || jqFound="NOT FOUND"
-  hash base64 2>/dev/null || base64Found="NOT FOUND"
   hash openssl 2>/dev/null || opensslFound="NOT FOUND"
 
-  if [[ ${httpieFound} != "FOUND" || ${jqFound} != "FOUND" || ${base64Found} != "FOUND" || ${opensslFound} != "FOUND" ]]
+  if [[ ${httpieFound} != "FOUND" || ${jqFound} != "FOUND" || ${opensslFound} != "FOUND" ]]
     then
       echo "Some requirements are not met:"
       echo
-      echo "base64 is ${base64Found}"
       echo "httpie is ${httpieFound}"
       echo "jq is ${jqFound}"
       echo "openssl is ${opensslFound}"
@@ -303,6 +300,8 @@ while getopts ":o:t:a:i:c:d:" opt; do
   esac
 done
 shift $((OPTIND -1))
+
+requirements
 
 if [[ -z ${OKTA_ORG} ]]
   then
