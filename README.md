@@ -1,4 +1,4 @@
-This tool automates most of the process of updating the certificate for your SAML app.
+This tool automates most of the process of updating the certificate for your SAML app to a new certificate from a Certificate Authority (CA)
   
 ## Step 1:
 
