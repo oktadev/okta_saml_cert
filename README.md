@@ -46,6 +46,9 @@ Use this CSR at the SSL Certificate Authority of your choice to get it signed by
 Download the certificates and re-run this script with the -c and -d params to upload to Okta.
 ```
 
+**NOTE:** You'll need to use a Certificate Authority (CA) to sign the CSR and get the new certificate. 
+https://zerossl.com is one option.
+
 ## Step 3:
 
 ```
