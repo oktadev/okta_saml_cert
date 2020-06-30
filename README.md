@@ -1,6 +1,49 @@
 This tool automates most of the process of updating the certificate for your SAML app to a new certificate from a Certificate Authority (CA)
+
+## Requirements
+
+You need to install the following packages:
+
+* [HttPie](https://httpie.org)
+* [jq](https://stedolan.github.io/jq/)
+* [openssl](https://www.openssl.org/)
+
+### MacOs
+
+Each of these packages can be installed using [Homebrew](https://brew.sh/)
+
+* `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"`
+* `brew install httpie`
+* `brew install jq`
+
+**Note:** Installing `httpie` automatically installs `openssl`
+
+### Linux
+
+You can use Homebrew with Linux as well. Or, you can use the package manager in your distribution. Here are the commands you would use with Ubuntu and others:
+
+* sudo apt-get install jq
+* sudo apt-get install httpie
+* openssl is already installed on Linux
+
+### Windows
+
+Running on Windows requires enabling the **Windows Subsystem for Linux**.
+
+Go to: Control Panel > Programs > Turn Windows Features On Or Off. Enable the "Windows Subsystem for Linux" option in the list, and then click the "OK" button.
+
+You'll need to restart Windows.
+
+Then, choose "Get the apps" unter the "Linux on Windows?" banner. There's a number of Linux distributions to choose from. I reccommend Ubuntu. 
+Choose a distro and click "Get".
+
+You can then launch the Linux distro by searching for it from the Start menu.
+
+After some one-time setup, you'll be at a bash shell. You can now use the instructions for installing on Linux as above.
+
+## Running
   
-## Step 1:
+### Step 1:
 
 `./okta_saml_cert.sh -o <okta org> -t <api token> [-a <all or part of app label to search for>]`
   
@@ -15,7 +58,7 @@ app id: 0oaeocdejh75p718F1t7, app label: Palo Alto Networks - GlobalProtect, app
 NOTE: Take note of the app id, app label and app name as you will need them later.
 ```
   
-## Step 2:
+### Step 2:
 
 `./okta_saml_cert.sh -o <okta org> -t <api token> -i <okta app id>`
   
@@ -51,7 +94,7 @@ Download the certificates and re-run this script with the -c and -d params to up
 **NOTE:** You'll need to use a Certificate Authority (CA) to sign the CSR and get the new certificate. 
 https://zerossl.com is one option.
 
-## Step 3 (continues automatically from step 2):
+### Step 3 (continues automatically from step 2):
 
 Enter the name of your certificate file (ex: certificate.crt): certificate.crt
 Working with: certificate.crt

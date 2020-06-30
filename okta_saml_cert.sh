@@ -115,8 +115,9 @@ requirements () {
       echo "jq is ${jqFound}"
       echo "openssl is ${opensslFound}"
       echo
-      echo "These tools can be installed with brew on mac."
-      echo "for more information, go to: https://brew.sh"
+      echo "These tools can be installed with brew on mac and linux. Or, you can use the native installer on Linux."
+      echo "For more information, go to: https://brew.sh"
+      echo "Check README.md for more information on installing these requirements on Windows."
       exit 1
   fi
 }
@@ -349,7 +350,7 @@ fi
 if [[ -z ${OKTA_APP_ID} ]]
   then
     apps
-    return 0  
+    exit 0
 fi
 
 do_csr
