@@ -96,6 +96,7 @@ https://zerossl.com is one option.
 
 ### Step 3 (continues automatically from step 2):
 
+```
 Enter the name of your certificate file (ex: certificate.crt): certificate.crt
 Working with: certificate.crt
 Is this correct? y
@@ -139,3 +140,4 @@ Certificate:
         Subject: CN=afitnerd.com
 ...
 Please make sure that the new cert information matches what you expect.
+```
